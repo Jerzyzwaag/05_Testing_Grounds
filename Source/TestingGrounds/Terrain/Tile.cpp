@@ -3,6 +3,7 @@
 #include "Tile.h"
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h" 
+//#include "EngineUtils.h"
 
 // Sets default values
 ATile::ATile()
@@ -56,7 +57,7 @@ void ATile::PlaceActor(TSubclassOf<AActor> ToSpawn, FVector SpawnPoint, float Ro
 void ATile::BeginPlay()
 {
 	Super::BeginPlay();
-	CanSpawnAtLocation(GetActorLocation(), 300);
+
 }
 
 // Called every frame
@@ -64,6 +65,11 @@ void ATile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATile::SetPool(UActorPool * InPool)
+{
+	Pool = InPool;
 }
 
 bool ATile::CanSpawnAtLocation(FVector Location, float Radius) {
