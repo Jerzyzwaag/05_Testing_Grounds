@@ -46,29 +46,27 @@ void ATile::PlaceAIPawns(TSubclassOf<APawn> ToSpawn, int32 MinSpawn, int32 MaxSp
 
 void ATile::PlaceActor(TSubclassOf<APawn> ToSpawn, FSpawnPosition SpawnPosition)
 {
-	auto Spawned = GetWorld()->SpawnActor<APawn>(ToSpawn);
+	FRotator Rotation(0, SpawnPosition.Rotation, 0);
+	auto Spawned = GetWorld()->SpawnActor<APawn>(ToSpawn, SpawnPosition.Location, Rotation);
 	if (Spawned == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to spawn enemy."));
 		return;
 	}
-	Spawned->SetActorRelativeLocation(SpawnPosition.Location);
 	Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
-	Spawned->SetActorRotation(FRotator(0, SpawnPosition.Rotation, 0));
 	Spawned->SpawnDefaultController();
 	Spawned->Tags.Add(FName("Enemy"));
 }
 
 void ATile::PlaceActor(TSubclassOf<AActor> ToSpawn, const FSpawnPosition& SpawnPosition) {
-	auto Spawned = GetWorld()->SpawnActor<AActor>(ToSpawn);
+	FRotator Rotation(0, SpawnPosition.Rotation, 0);
+	auto Spawned = GetWorld()->SpawnActor<AActor>(ToSpawn,SpawnPosition.Location,Rotation);
 	if (Spawned == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to spawn enemy."));
 		return;
 	}
-	Spawned->SetActorRelativeLocation(SpawnPosition.Location);
 	Spawned->AttachToActor(this, FAttachmentTransformRules(EAttachmentRule::KeepRelative, false));
-	Spawned->SetActorRotation(FRotator(0, SpawnPosition.Rotation, 0));
 	Spawned->SetActorScale3D(FVector(SpawnPosition.Scale));
 }
 
@@ -99,8 +97,9 @@ void ATile::BeginPlay()
 
 void ATile::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-
+	if(Pool != nullptr && NavMeshBoundsVolume != nullptr){
 	Pool->Return(NavMeshBoundsVolume);
+	}
 
 }
 
